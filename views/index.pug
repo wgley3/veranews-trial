@@ -1,5 +1,143 @@
-extends layout
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/cookieLib.js')
+    script(src='/javascripts/redirectLib.js')
+    script.
+      $(function() {
+        var viraUserCookie = getCookie('viraUserCookie');
+        var configured = false
+        if (viraUserCookie) {
 
-block content
-  h1= title
-  p Welcome to #{title}
+          //We have a cookie set - check if it's valid
+          $.ajax({
+            type: 'GET',
+            url: '/validateCookie?cookieID=' + viraUserCookie,
+            error: function ( err ) {
+              //unset the cookie
+              unsetCookie('viraUserCookie');
+              redirectToHome()
+            },
+            success: function( resp ) {
+              if(resp.valid) {
+                //If cookie is valid, then we don't need to display the config form
+                //Redirect to article page
+                redirectToArticle(null)
+              } else {
+                //If it isn't valid, then unset the cookie
+                unsetCookie('viraUserCookie');
+                redirectToHome()
+              }
+            }
+          });
+        } else {
+          redirectToHome()
+        }
+
+        //Configure form
+        $( '#configForm' ).submit(function( event ) {
+          event.preventDefault();
+
+          var form = $( this );
+
+          $.ajax({
+            type: 'POST',
+            url: '/user',
+            data: form.serialize(),
+            dataType: 'json',
+            error: function (err) {
+              //TODO - show error message to user on failure
+              console.log('error');
+              console.log(err.responseJSON.message);
+            },
+            success: function( resp ) {
+              var cookieID = resp.cookieID;
+              setCookie('viraUserCookie', cookieID, 365*5)
+              redirectToArticle(null)
+            }
+          });
+        });
+
+        setInterval(function() {
+          var activityID = $('#activityTracker').attr('activityid')
+          if(activityID) {
+            $.ajax({
+              type: 'POST',
+              url: '/topicActivity',
+              data: 'activityID=' + activityID,
+              dataType: 'json',
+              error: function (err) {
+                console.log('error');
+                console.log(err.responseJSON.message);
+              },
+              success: function( resp ) {}
+            });
+          }
+
+        }, 5000);
+
+        //Configure sideBarBlocks
+        $( '.sideBarBlock' ).each(function(){
+          $(this).click(function() {
+            var topicID = $(this).attr('topicid');
+            redirectToArticle(topicID)
+          })
+        })
+      });
+      
+  body
+    div.contentWrap
+      div#content
+        include includes/article.pug
+        if dualView
+          .articleWrapperDual.left
+            +article(mainArticle[0].title, mainArticle[0].body, mainArticle[0].color)
+          .articleWrapperDual.right
+            +article(mainArticle[1].title, mainArticle[1].body, mainArticle[1].color)
+        else
+          .articleWrapperSingle
+            +article(mainArticle[0].title, mainArticle[0].body, mainArticle[0].color)
+      div#rightSidebar
+        include includes/sideBarBlock.pug
+        each i in sideArticles
+          +sideBarBlock(i.title, i.excerpt, i.color, i.topicID)
+    #activityTracker(hidden=true, activityid=activityID)
+    unless configured
+      #configScreen
+        include includes/radioButtonCustom.pug
+        #configFormDiv
+          h1.formText.formTitle Welcome to Vira!
+          p.formText= introductionMessage
+          form#configForm
+            .formInputGroup
+              p.formText Where do you fall on the <em>political spectrum</em>?
+              .radioGroup#radioGroup1
+                .radioRow
+                  +radioButtonCustom('Conservative', 'liberalness','1','rdbp1')
+                  +radioButtonCustom('Semi-Conservative', 'liberalness','2','rdbp2')
+                  +radioButtonCustom('Semi-Liberal', 'liberalness','3','rdbp3')
+                  +radioButtonCustom('Liberal', 'liberalness','4','rdbp4')
+            .formInputGroup
+              p.formText Which <em>age range</em> do you fall into?
+              .radioGroup#radioGroup2
+                .radioRow
+                  +radioButtonCustom('18 years or younger', 'topAge','18','rdba1')
+                .radioRow
+                  +radioButtonCustom('19-24 years old', 'topAge','24','rdba2')
+                  +radioButtonCustom('25-34 years old', 'topAge','34','rdba3')
+                .radioRow
+                  +radioButtonCustom('35-44 years old', 'topAge','44','rdba4')
+                  +radioButtonCustom('45-54 years old', 'topAge','54','rdba5')
+                .radioRow
+                  +radioButtonCustom('55-64 years old', 'topAge','64','rdba6')
+                  +radioButtonCustom('65 years or older', 'topAge','100','rdba7')
+            .formInputGroup
+              input(type='hidden', name='experimentGroup', value=experimentGroup)
+              input(type='hidden', name='batchActivityID', value=batchActivityID)
+              input(type='submit', value='Continue to Articles')
+    header
+      img(src='images/ViraLogo.png')
+      span <em>Vira</em>, a news source

@@ -1,0 +1,60 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/cookieLib.js')
+  body
+    div.contentWrap
+      div#content
+        include includes/article.pug
+        +article('Welcome to Vira news!', 'Want to find out more? Read here.\nWant to find out more? Read here.\nWant to find out more? Read here.\nWant to find out more? Read here.\nWant to find out more? Read here.\nWant to find out more? Read here.', '#808080')
+      div#rightSidebar
+        include includes/sideBarBlock.pug
+        if configured
+          +sideBarBlock('Article 1, the one with a real long title', 'Some Excerpt! Read me...', 'blue')
+          +sideBarBlock('Article 2', 'Some Excerpt! Read me...', 'green')
+          +sideBarBlock('Article 3', 'Some Excerpt! Read me...', 'red')
+          +sideBarBlock('Article 4', 'Some Excerpt! Read me...', 'orange')
+          +sideBarBlock('Article 5', 'Some Excerpt! Read me...', '#00ff99')
+          +sideBarBlock('Article 6', 'Some Excerpt! Read me...', '#11ff99')
+          +sideBarBlock('Article 7', 'Some Excerpt! Read me...', '#44ff66')
+        else
+          - for (i in [0, 1, 2, 3, 4]) {
+            +sideBarBlock('', 'Want to find out more? Read here.', '#808080')
+          - }
+    if configured
+      #configScreen
+        include includes/radioButtonCustom.pug
+        #configFormDiv
+          h1.formText.formTitle Welcome to Vira!
+          p.formText Before we get started, help us select articles for you<br/>by answering a couple of questions...
+          form#configForm
+            .formInputGroup
+              p.formText Where do you fall on the <em>political spectrum</em>?
+              .radioGroup#radioGroup1
+                .radioRow
+                  +radioButtonCustom('Conservative', 'liberalness','1','rdbp1')
+                  +radioButtonCustom('Semi-Conservative', 'liberalness','2','rdbp2')
+                  +radioButtonCustom('Semi-Liberal', 'liberalness','3','rdbp3')
+                  +radioButtonCustom('Liberal', 'liberalness','4','rdbp4')
+            .formInputGroup
+              p.formText Which <em>age range</em> do you fall into?
+              .radioGroup#radioGroup2
+                .radioRow
+                  +radioButtonCustom('18 years or younger', 'topAge','18','rdba1')
+                .radioRow
+                  +radioButtonCustom('18-24 years old', 'topAge','24','rdba2')
+                  +radioButtonCustom('25-34 years old', 'topAge','34','rdba3')
+                .radioRow
+                  +radioButtonCustom('35-44 years old', 'topAge','44','rdba4')
+                  +radioButtonCustom('45-54 years old', 'topAge','54','rdba5')
+                .radioRow
+                  +radioButtonCustom('55-64 years old', 'topAge','64','rdba6')
+                  +radioButtonCustom('65 years or older', 'topAge','100','rdba7')
+            .formInputGroup
+              input(type='submit', value='Continue to Articles')
+    header
+      img(src='images/ViraLogo.png')
+      span <em>Vira</em>, a news source

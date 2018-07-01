@@ -1,0 +1,6 @@
+mixin radioButtonCustom(label, inputName, inputValue, id)
+  span.radioSpan
+    span.formText= label
+    input(type='radio', name=inputName, value=inputValue, id=id)
+    label(for=id).formText 
+      span.radioLabelSpan
