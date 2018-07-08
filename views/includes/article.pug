@@ -1,5 +1,4 @@
 mixin article(title, content, color)
   .articleHeader(style={background: color})
     h1.articleTitle= title
-  .articleBody
-    p= content
+  .articleBody !{content}

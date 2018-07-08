@@ -2,4 +2,4 @@ mixin sideBarBlock(title, excerpt, color, topicID)
   .sideBarBlock(topicid=topicID)
     .sideBarBlockColor(style={background: color})
       p.sideBarBlockTitle= title
-    p= excerpt
+    p.sideBarBlockContent= excerpt

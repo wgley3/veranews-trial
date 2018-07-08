@@ -46,7 +46,15 @@ router.get('/viewTopic', [function(req, res, next) {
     res.send({error: 'Unable to connect to the database.'})
   });
 }, function(req, res, next) {
-  
+  var contentParse = function(content){
+    content = content.replace(/\n?\r\n/g, '<br />' );
+    return content;
+  };
+
+  var excerptStripTags = function(content){
+    return content.replace('<p>', '').replace('</p>', '');
+  }
+
   //Get all topics for the user depending on liberalness and experiment group
   var articleWhereClause = {};
   if (req.user.experimentGroup !== 'C') {
@@ -97,7 +105,7 @@ router.get('/viewTopic', [function(req, res, next) {
   	var mainArticles = mainTopic.articles.map((article) => {
   	  return {
         title: article.title,
-        body: article.body,
+        body: contentParse(article.body),
         color: article.color,
         topicID: article.topicId
       }
@@ -109,7 +117,7 @@ router.get('/viewTopic', [function(req, res, next) {
   	  if(topic.articles.length == 2) { //Dual view: reference the topic info for the preview
         return {
   	  	  title: topic.title,
-	        excerpt: topic.excerpt,
+	        excerpt: excerptStripTags(topic.excerpt.substring(0,140)) + '...',
 	        color: topic.color,
           topicID: topic.id
   	    }
@@ -117,7 +125,7 @@ router.get('/viewTopic', [function(req, res, next) {
   	  	var article = topic.articles[0]
   	  	return {
   	  	  title: article.title,
-	        excerpt: article.body.substring(0,40),
+	        excerpt: excerptStripTags(article.body.substring(0,140)) + '...',
 	        color: article.color,
           topicID: article.topicId
   	    }

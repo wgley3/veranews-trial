@@ -19,7 +19,7 @@ header {
   background-color: white;
 }
 
-header span, header em {
+header span, header p {
   color: #8379FE;
   font-size: 14pt;
 }
@@ -29,7 +29,7 @@ header span {
   top: -15px;
 }
 
-header em {
+header p {
   font-style: normal;
   font-weight: thick;
 }
@@ -102,6 +102,15 @@ header img {
   margin-right: 15px;
 }
 
+.articleBody {
+  padding-bottom: 30px;
+}
+
+.articleBody p, .sideBarBlock p {
+  color: #303030;
+  font-size: 12pt;
+}
+
 #rightSidebar {
   position: absolute;
   right: 0px;
@@ -110,6 +119,10 @@ header img {
   overflow-y: scroll;
   width: 275px;
   box-shadow: -5px 0px 15px #f0f0f0;
+}
+
+p.sideBarBlockContent {
+  font-size: 10pt;
 }
 
 .sideBarBlock {
@@ -133,13 +146,13 @@ header img {
 }
 
 .sideBarBlockColor {
-  height: 70px;
+  height: 100px;
 }
 
 .sideBarBlockTitle {
   margin: 10px 20px 10px 15px;
   position: relative;
-  bottom: -30px;
+  bottom: -40px;
   width: 90%;
 }
 
@@ -151,8 +164,9 @@ header img {
 h1.articleTitle {
   margin: 15px;
   position: relative;
-  top: 120px;
+  top: 90px;
   width: 90%;
+  font-weight: 500;
 }
 
 #configScreen {
@@ -189,12 +203,15 @@ em {
   color: #8379FE;
   font-size: 14pt;
   font-style: normal;
-  font-weight: thick;
+  font-weight: bold;
 }
 
 .formInputGroup {
   text-align: center;
-  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .radioSpan {
@@ -250,7 +267,7 @@ input[type="radio"]:checked + label span.radioLabelSpan::after {
   padding: 10px;
 }
 #radioGroup1 {
-	padding-right: 45px;
+	/*padding-right: 45px;*/
 }
 #radioGroup2 {
 	padding-right: 15px;
