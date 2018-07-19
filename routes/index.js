@@ -7,11 +7,11 @@ router.get('/', function(req, res, next) {
   var expGroupPossible = 'ABC'
   var experimentGroup = expGroupPossible.charAt(Math.floor(Math.random() * expGroupPossible.length));
 
-  var introductionMessage = 'Before we get started, help us select articles for you\nby answering a couple of questions...';
+  var introductionMessage = 'Before we get started, help us select articles for you<br/>by answering a couple of questions...';
   if (experimentGroup === 'A') {
-    introductionMessage = 'We want to make sure your perspective is represented. Help us select\narticles for you by answering a couple of questions...\n'
+    introductionMessage = 'We want to make sure <em>your perspective is represented</em>. Help us select<br/>articles for you by answering a couple of questions...\n'
   } else if (experimentGroup === 'B') {
-    introductionMessage = 'We want to expose you to perspectives different than your own. Help us\nselect articles for you by answering a couple of questions...\n' 
+    introductionMessage = 'We want to expose you to perspectives <em>different than your own</em>. Help us<br/>select articles for you by answering a couple of questions...\n' 
   }
 
   var sampleArticleBody = '';

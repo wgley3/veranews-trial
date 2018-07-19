@@ -8,6 +8,22 @@ html
     script(src='/javascripts/redirectLib.js')
     script.
       $(function() {
+        $('form input').change(function() {
+          var filled = true;
+          $('form input').each(function() {
+            var $this = $(this);
+            if($this.is(':radio') && $('input[name='+ $this.attr("name") +']:checked').length == 0) {
+              filled = false; 
+            }
+          });
+
+          if (filled) { 
+            $('input[name=submitButton]').removeAttr('disabled');
+          } else {
+            $('input[name=submitButton]').attr('disabled', 'disabled');
+          }
+        });
+
         var viraUserCookie = getCookie('viraUserCookie');
         var configured = false
         if (viraUserCookie) {
@@ -110,7 +126,7 @@ html
         include includes/radioButtonCustom.pug
         #configFormDiv
           h1.formText.formTitle Welcome to Vira!
-          p.formText= introductionMessage
+          p.formText !{introductionMessage}
           form#configForm
             .formInputGroup
               p.formText Where do you fall on the <em>political spectrum</em>?
@@ -137,7 +153,7 @@ html
             .formInputGroup
               input(type='hidden', name='experimentGroup', value=experimentGroup)
               input(type='hidden', name='batchActivityID', value=batchActivityID)
-              input(type='submit', value='Continue to Articles')
+              input(type='submit', value='Continue to Articles', name='submitButton', disabled='disabled')
     header
       img(src='images/ViraLogo.png')
       span

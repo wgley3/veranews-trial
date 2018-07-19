@@ -106,9 +106,16 @@ header img {
   padding-bottom: 30px;
 }
 
-.articleBody p, .sideBarBlock p {
-  color: #303030;
+.articleBody p, .sideBarBlock p.sideBarBlockContent {
+  color: #707070;
+}
+
+.articleBody p {
   font-size: 12pt;
+}
+
+.sideBarBlock p.sideBarBlockContent {
+  font-size: 11pt;
 }
 
 #rightSidebar {
@@ -146,25 +153,30 @@ p.sideBarBlockContent {
 }
 
 .sideBarBlockColor {
-  height: 100px;
+  height: 80px;
+  opacity: .75;
 }
 
 .sideBarBlockTitle {
-  margin: 10px 20px 10px 15px;
+  margin: 10px 10px 10px 10px;
   position: relative;
-  bottom: -40px;
+  bottom: -20px;
   width: 90%;
+  color: white;
+  font-size: 13pt;
 }
 
 .articleHeader {
-	height: 200px;
+	height: 160px;
 	margin-bottom: 30px;
+  opacity: .75;
+  color: white;
 }
 
 h1.articleTitle {
   margin: 15px;
   position: relative;
-  top: 90px;
+  top: 70px;
   width: 90%;
   font-weight: 500;
 }
@@ -280,4 +292,8 @@ input[type="submit"] {
   border-radius: 4px;
   font-size: 16pt;
   background: linear-gradient(#AAA0FE, #7970ED);
+}
+
+input[type="submit"]:disabled {
+  background: linear-gradient(#D0D0D0, #D3D3D3);
 }
