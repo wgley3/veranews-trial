@@ -17,21 +17,31 @@ router.post('/user', [function(req, res, next) {
   var topAge = parseFloat(params.topAge);
 
   if (isNaN(topAge) || topAge < 1 || topAge > 100) {
-  	res.status(400);
-  	res.send({message: 'Please indicate your age.'})
-  	return undefined
+  	//res.status(400);
+  	//res.send({message: 'Please indicate your age.'})
+  	//return undefined
+
+    //Age is no longer required:
+    topAge = 0;
   }
 
   if(params.experimentGroup !== 'A' && params.experimentGroup !== 'B' && params.experimentGroup !== 'C') {
-  	res.status(400);
-  	res.send({message: 'Please reload the page and try again.'})
-  	return undefined
+  	//res.status(400);
+  	//res.send({message: 'Please reload the page and try again.'})
+  	//return undefined
+
+    //Experiment Group Assigned after page load
+    var expGroupPossible = 'ABC'
+    var experimentGroup = expGroupPossible.charAt(Math.floor(Math.random() * expGroupPossible.length));
+    params.experimentGroup = experimentGroup;
   }
 
   //Everything is valid, so create the user
   //Map topAge to ageRange
   var ageRange;
-  if (topAge <= 18) {
+  if (topAge <= 0) {
+    ageRange='undefn';
+  } else if (topAge <= 18) {
   	ageRange='0-18';
   } else if (topAge <= 24) {
   	ageRange='19-24';
@@ -58,7 +68,8 @@ router.post('/user', [function(req, res, next) {
   	cookieID : cookieID,
   	liberalness: liberalness,
   	ageRange: ageRange,
-  	experimentGroup: params.experimentGroup
+  	experimentGroup: params.experimentGroup,
+    autoRegister: params.cacheGroupUsed || false
   };
 
   req.db.models.user.create(userData).then((user) => {

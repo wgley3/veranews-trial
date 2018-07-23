@@ -6,6 +6,7 @@ html
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/cookieLib.js')
     script(src='/javascripts/redirectLib.js')
+    script(src='/javascripts/urlVars.js')
     script.
       $(function() {
         $('form input').change(function() {
@@ -51,31 +52,73 @@ html
           });
         } else {
           redirectToHome()
+
+          var politicalGroup = getUrlParam('cacheGroup', 'None');
+          var liberalness = 0;
+          if(politicalGroup === 'A') {
+            liberalness = 1;
+          } else if(politicalGroup === 'B') {
+            liberalness = 3;
+          }
+
+          var registrationData = {
+            liberalness: liberalness,
+            cacheGroupUsed: true
+          };
+
+          if(liberalness) {
+            //If we're on the "landing page" with no cookie, then configure the user and redirect
+            $.ajax({
+              type: 'POST',
+              url: '/user',
+              data: registrationData,
+              dataType: 'json',
+              error: function (err) {
+                //TODO - show error message to user on failure
+                console.log('error');
+                console.log(err.responseJSON.message);
+              },
+              success: function( resp ) {
+                setTimeout(function() {
+                  var cookieID = resp.cookieID;
+                  setCookie('viraUserCookie', cookieID, 365*5)
+                  redirectToArticle(null)
+                }, 3000);
+              }
+            });
+          } else {
+            //No info provided about the user beforehand
+            //Configure form
+            $( '.loading' ).each(function(i, obj) {
+              console.log(obj)
+              $(obj).hide();
+            }); // Set to not visible
+            $( '#configForm' ).show() // Set to visible
+
+            $( '#configForm' ).submit(function( event ) {
+              event.preventDefault();
+
+              var form = $( this );
+
+              $.ajax({
+                type: 'POST',
+                url: '/user',
+                data: form.serialize(),
+                dataType: 'json',
+                error: function (err) {
+                  //TODO - show error message to user on failure
+                  console.log('error');
+                  console.log(err.responseJSON.message);
+                },
+                success: function( resp ) {
+                  var cookieID = resp.cookieID;
+                  setCookie('viraUserCookie', cookieID, 365*5)
+                  redirectToArticle(null)
+                }
+              });
+            });
+          }
         }
-
-        //Configure form
-        $( '#configForm' ).submit(function( event ) {
-          event.preventDefault();
-
-          var form = $( this );
-
-          $.ajax({
-            type: 'POST',
-            url: '/user',
-            data: form.serialize(),
-            dataType: 'json',
-            error: function (err) {
-              //TODO - show error message to user on failure
-              console.log('error');
-              console.log(err.responseJSON.message);
-            },
-            success: function( resp ) {
-              var cookieID = resp.cookieID;
-              setCookie('viraUserCookie', cookieID, 365*5)
-              redirectToArticle(null)
-            }
-          });
-        });
 
         setInterval(function() {
           var activityID = $('#activityTracker').attr('activityid')
@@ -126,8 +169,11 @@ html
         include includes/radioButtonCustom.pug
         #configFormDiv
           h1.formText.formTitle Welcome to Vira!
-          p.formText !{introductionMessage}
-          form#configForm
+          p.formText.loading !{introductionMessageAuto}
+          .formInputGroup.loading
+            .loading.spinner
+          form#configForm(hidden='hidden')
+            p.formText !{introductionMessage}
             .formInputGroup
               p.formText Where do you fall on the <em>political spectrum</em>?
               .radioGroup#radioGroup1
@@ -153,6 +199,7 @@ html
             .formInputGroup
               input(type='hidden', name='experimentGroup', value=experimentGroup)
               input(type='hidden', name='batchActivityID', value=batchActivityID)
+              input(type='hidden', name='cacheGroupUsed', value=false)
               input(type='submit', value='Continue to Articles', name='submitButton', disabled='disabled')
     header
       img(src='images/ViraLogo.png')

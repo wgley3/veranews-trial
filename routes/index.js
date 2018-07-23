@@ -8,10 +8,13 @@ router.get('/', function(req, res, next) {
   var experimentGroup = expGroupPossible.charAt(Math.floor(Math.random() * expGroupPossible.length));
 
   var introductionMessage = 'Before we get started, help us select articles for you<br/>by answering a couple of questions...';
+  var introductionMessageAuto = 'Vira shows you <em>different perspectives</em> on various political issues.<br/><br/>Loading articles...';
   if (experimentGroup === 'A') {
     introductionMessage = 'We want to make sure <em>your perspective is represented</em>. Help us select<br/>articles for you by answering a couple of questions...\n'
+    introductionMessageAuto = 'Vira makes sure that <em>your perspective is represented</em>.<br/><br/>Loading articles...'
   } else if (experimentGroup === 'B') {
     introductionMessage = 'We want to expose you to perspectives <em>different than your own</em>. Help us<br/>select articles for you by answering a couple of questions...\n' 
+    introductionMessageAuto = 'Vira is all about <em>challenging your perspective</em>.<br/><br/>Loading articles...'
   }
 
   var sampleArticleBody = '';
@@ -31,6 +34,7 @@ router.get('/', function(req, res, next) {
     configured: false,
     experimentGroup: experimentGroup,
     introductionMessage: introductionMessage,
+    introductionMessageAuto: introductionMessageAuto,
     dualView: false,
     mainArticle: [{
       title: 'Welcome to Vira!',
